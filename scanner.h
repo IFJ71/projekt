@@ -1,60 +1,70 @@
-#define ID        0        // identifikator
-#define LEX_ERROR 1        // lexikální chyba
+// scanner.h
 
-// klicova slova
-#define BEGIN     100
-#define BOOLEAN   101
-#define COPY      102
-#define DO        103
-#define ELSE      104
-#define END       105
-#define FALSE     106
-#define FIND      107
-#define FORWARD   108
-#define FUNCTION  109
-#define IF        110
-#define INTEGER   111
-#define LENGTH    112
-#define READLN    113
-#define REAL      114
-#define SORT      115
-#define STRING    116
-#define THEN      117
-#define TRUE      118
-#define VAR       119
-#define WHILE     120
-#define WRITE     121
+enum TokenyScanneru
+{
+   IDENTIFIKATOR =      0,
+   LEXIKALNICHYBA =     1,
 
-// aritmeticke operatory
-#define INK       130
-#define DEK       131
-#define PLUS      132
-#define MINUS     133
-#define KRAT      134
-#define DELENO    135
-#define PRIRAZENI 136
+   // klicova slova
+   BEGIN =              100,
+   BOOLEAN =            101,
+   COPY =               102,
+   DO =                 103,
+   ELSE =               104,
+   END =                105,
+   FALSE =              106,
+   FIND =               107,
+   FORWARD =            108,
+   FUNCTION =           109,
+   IF =                 110,
+   INTEGER =            111,
+   LENGTH =             112,
+   READLN =             113,
+   REAL =               114,
+   SORT =               115,
+   STRING =             116,
+   THEN =               117,
+   TRUE =               118,
+   VAR =                119,
+   WHILE =              120,
+   WRITE =              121,
 
-// porovnavaci operatory
-#define MENSI        140
-#define VETSI        141
-#define MENSIROVNO   142
-#define VETSIROVNO   143
-#define ROVNO        144
-#define NEROVNO      145
+   // konstanty
+   KONST_INTEGER =      130,
+   KONST_REAL =         131,
+   KONST_STRING =       132,
 
-// logicke operatory
-#define AND          150
-#define OR           151
-#define NOT          152
-#define XOR          153
+   // aritmeticke operatory
+   INKREMENTACE =       140,
+   DEKREMENTACE =       141,
+   PLUS =               142,
+   MINUS =              143,
+   KRAT =               144,
+   DELENO =             145,
+   PRIRAZENI =          146,
 
-// znaky
-#define STREDNIK     160
-#define TECKA        161
-#define DVOJTECKA    162
-#define LZAVORKA     163
-#define PZAVORKA     164
-#define KONECSOUBORU 165
+   // porovnavaci operatory
+   MENSI =              150,
+   VETSI =              151,
+   MENSIROVNO =         152,
+   VETSIROVNO =         153,
+   ROVNO =              154,
+   NEROVNO =            155,
+
+   // logicke operatory
+   AND =                160,
+   OR =                 161,
+   NOT =                162,
+   XOR =                163,
+
+   // znaky
+   STREDNIK =           170,
+   TECKA =              171,
+   DVOJTECKA =          172,
+   LEVAZAVORKA =        173,
+   PRAVAZAVORKA =       174,
+   KONECSOUBORU =       175
+};
 
 int is_keyword(string *str);
 void setSourceFile(FILE *file);

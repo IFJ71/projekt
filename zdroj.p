@@ -1,5 +1,5 @@
 var
-   7a : integer; { komentar }
+   a : integer; { komentar }
    b : real;
 
 begin

@@ -1,3 +1,5 @@
+// scanner.c
+
 #include <stdio.h>
 #include <ctype.h>
 
@@ -57,7 +59,7 @@ int is_keyword(string *str)
       return WHILE;
    if (strCmpConstStr(str, "write") == 0)
       return WRITE;
-   return ID;
+   return IDENTIFIKATOR;
 }
 
 int getNextToken(string *attr)
@@ -76,10 +78,10 @@ int getNextToken(string *attr)
             if (isspace(c))
                state = 0; // ignorovani bilych mist
             else if (c == '{')
-               state = 1; // komentar
+               state = 1;
             else if (isalpha(c))
             {
-               strAddChar(attr, c); // pridani alfanumerickeho znaku
+               strAddChar(attr, c);
                state = 2;
             }
             else if (isdigit(c))
@@ -112,13 +114,13 @@ int getNextToken(string *attr)
             else if (c == '.')
                return TECKA;
             else if (c == '(')
-               return LZAVORKA;
+               return LEVAZAVORKA;
             else if (c == ')')
-               return PZAVORKA;
+               return PRAVAZAVORKA;
             else if (c == EOF)
                return KONECSOUBORU;
             else
-               return LEX_ERROR;
+               return LEXIKALNICHYBA;
 
             break;
          }
@@ -127,11 +129,11 @@ int getNextToken(string *attr)
             if (c == '}')
                state = 0;
             else if (c == EOF)
-               return LEX_ERROR;
+               return LEXIKALNICHYBA;
             
             break;
          }
-         case 2: // alfanumericky znak
+         case 2: // alfanumericky znak (id nebo klic. slovo)
          {
             if (isalnum(c))
                strAddChar(attr, c);
@@ -143,7 +145,7 @@ int getNextToken(string *attr)
 
             break;
          }
-         case 3: // cislo
+         case 3: // libovolne cislo
          {
             if (isdigit(c))
                strAddChar(attr, c);
@@ -155,7 +157,7 @@ int getNextToken(string *attr)
             else
             {
                ungetc(c, source);
-               return INTEGER;
+               return KONST_INTEGER;
             }
 
             break;
@@ -173,7 +175,7 @@ int getNextToken(string *attr)
          case 5: // inkrementace
          {
             if (c == '+')
-               return INK;
+               return INKREMENTACE;
             else
             {
                ungetc(c, source);
@@ -183,7 +185,7 @@ int getNextToken(string *attr)
          case 6: // dekrementace
          {
             if (c == '-')
-               return DEK;
+               return DEKREMENTACE;
             else
             {
                ungetc(c, source);
@@ -217,7 +219,7 @@ int getNextToken(string *attr)
             if (isdigit(c))
                strAddChar(attr, c);
             else
-               return REAL;
+               return KONST_REAL;
             
             break;
          }
