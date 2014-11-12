@@ -30,7 +30,10 @@ int main(int argc, char *argv[])
    strInit(&str);
    
    while (!feof(f))
-      printf("%d\t\t%s\n", getNextToken(&str), strGetStr(&str));
+   {
+      int token = getNextToken(&str);
+      printf("%d\t\t%s\n", token, strGetStr(&str));
+   }
 
    strFree(&str);
    return 0;

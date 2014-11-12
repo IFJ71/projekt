@@ -107,6 +107,12 @@ int getNextToken(string *attr)
                state = 7;
             else if (c == '>')
                state = 8;
+            else if (c == '\'')
+               state = 10;
+            else if (c == '#')
+               state = 12;
+            else if (c == '\"')
+               return KONST_STRING;
             else if (c == '=')
                return ROVNO;
             else if (c == ';')
@@ -223,6 +229,49 @@ int getNextToken(string *attr)
             
             break;
          }
+         case 10:
+         {
+            if (c == '\'')
+               state = 11;
+            else if (c == EOF || c == '\n')
+               return LEXIKALNICHYBA;
+            else
+               strAddChar(attr, c);
+
+            break;
+         }
+         case 11:
+         {
+            if (c == '\'')
+            {
+               strAddChar(attr, c);
+               state = 10;
+            }
+            else
+            {
+               ungetc(c, source);
+               return KONST_STRING;
+            }
+
+            break;
+         }
+         case 12:
+         {
+            if (isdigit(c))
+               strAddChar(attr, c);
+            else if (strGetLength(attr) == 0)
+            {
+               ungetc(c, source);
+               return LEXIKALNICHYBA;
+            }
+            else
+            {
+               ungetc(c, source);
+               return KONST_CHAR;
+            }
+
+            break;
+         }         
       }
    }
 }

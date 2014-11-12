@@ -1,6 +1,7 @@
 var
    a : integer; { komentar }
    b : real;
+   c : string;
 
 begin
    a := 7;
@@ -12,4 +13,6 @@ begin
       b := a * 0.1;
    else if (a <> 8) then
       a := a + 2;
+
+   c := 'Ahoj'#010'Sve''te'#30";
 end.

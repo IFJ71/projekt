@@ -33,6 +33,7 @@ enum TokenyScanneru
    KONST_INTEGER =      130,
    KONST_REAL =         131,
    KONST_STRING =       132,
+   KONST_CHAR =         133,
 
    // aritmeticke operatory
    INKREMENTACE =       140,
@@ -63,7 +64,8 @@ enum TokenyScanneru
    DVOJTECKA =          172,
    LEVAZAVORKA =        173,
    PRAVAZAVORKA =       174,
-   KONECSOUBORU =       175
+   APOSTROF =           175,
+   KONECSOUBORU =       176
 };
 
 int is_keyword(string *str);
