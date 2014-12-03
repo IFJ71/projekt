@@ -2,7 +2,7 @@
 #include "str.h"
 #include "stable.h"
 #include "ilist.h"
-#include "scaner.h"
+#include "scanner.h"
 #include "parser.h"
 
 
@@ -13,6 +13,168 @@ string attr;        // globalni promenna, ve ktere bude ulozen atribut tokenu
 
 int counterVar = 1;
 
+int start()
+{
+   int result;
+   strInit(&attr);
+   token = getNextToken(&attr);
+
+   switch (token)
+   {
+      case VAR:
+         result = declaration();
+         break;
+
+      case FUNCTION:
+         result = function();
+
+      case BEGIN:
+
+      default:
+         return SYNTAX_ERROR;
+   }
+}
+
+int declaration()
+{
+   tTableItem item;
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+   
+   if (token != IDENTIFIKATOR)
+      return SYNTAX_ERROR;
+
+   item.key = attr.str;
+   item.typ = IDENTIFIKATOR; // zde bude funkce, co přidává do tabulky prvek
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != DVOJTECKA)
+      return SYNTAX_ERROR;
+
+   if (type(&item) != SYNTAX_OK)
+      return SYNTAX_ERROR;
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token == STREDNIK)
+      return SYNTAX_OK;
+}
+
+int type(tTableItem *item)
+{
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   switch (token)
+   {
+      case INTEGER:
+         item->data.varType = INTEGER;
+         return SYNTAX_OK;
+
+      case BOOLEAN:
+         item->data.varType = BOOLEAN;
+         return SYNTAX_OK;
+
+      case STRING:
+         item->data.varType = STRING;
+         return SYNTAX_OK;
+
+      case REAL:
+         item->data.varType = REAL;
+         return SYNTAX_OK;
+
+      default:
+         return SYNTAX_ERROR;
+   }
+}
+
+int function()
+{
+   int result;
+   tTableItem item;
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != FUNCTION)
+      return SYNTAX_ERROR;
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != IDENTIFIKATOR)
+      return SYNTAX_ERROR;
+
+   item.key = attr.str;
+   item.typ = FUNCTION; // + přidání prvku do tabulky
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != LEVAZAVORKA)
+      return SYNTAX_ERROR;
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != PRAVAZAVORKA)
+      result = param(&item);
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != DVOJTECKA)
+      return SYNTAX_ERROR;
+
+   result = type(&item);
+
+
+}
+
+int param(tTableItem *item)
+{
+   int result;
+
+   if (token != IDENTIFIKATOR)
+      return SYNTAX_ERROR;
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (token != DVOJTECKA)
+      return SYNTAX_ERROR;
+
+   result = type(item);
+
+   token = getNextToken(&attr);
+   if (token == LEX_ERROR)
+      return LEX_ERROR;
+
+   if (!(token == STREDNIK || token == PRAVAZAVORKA))
+      return SYNTAX_ERROR;
+
+   if (token == PRAVAZAVORKA)
+      return SYNTAX_OK;
+
+   token = getNextToken(&attr);
+   return param(item);
+}
+
+/*
 void generateVariable(string *var)
 // generuje jedinecne nazvy identifikatoru
 // nazev se sklada ze znaku $ nasledovanym cislem
@@ -279,4 +441,4 @@ int parse(tSymbolTable *ST, tListOfInstr *instrList)
      result = program();
   strFree(&attr);
   return result;
-}
+}*/

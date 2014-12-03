@@ -3,6 +3,7 @@
 #define FCE 201
 #define IDENT 202
 #include "str.h"
+#include <stdbool.h>
 typedef struct
 {
   int varType;  // typ dane promenne
