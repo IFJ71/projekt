@@ -4,6 +4,9 @@
 #define IDENT 202
 #include "str.h"
 #include <stdbool.h>
+
+/*pokus funkcnosti windows git commitu, zatim BEZE ZMEN!*/
+
 typedef struct
 {
   int varType;  // typ dane promenne
