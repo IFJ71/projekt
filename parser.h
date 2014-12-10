@@ -30,5 +30,4 @@ int vol_param(/* ! */);
 int hodnota();
 int vol_param2();
 
-
 #endif

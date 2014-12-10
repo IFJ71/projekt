@@ -13,6 +13,7 @@ string *parameters = NULL; // Parametry
 
 int counterVar = 1;
 
+
 int parse(tSymbolTable *ST/*, tListOfInstr *instrList*/)
 {
    int result = SYNTAX_ERROR;
