@@ -13,7 +13,7 @@ void setSourceFile(FILE *file)
    source = file;
 }
 
-int is_keyword(string *str)
+int is_keyword(string *str, int fce)
 {
    if (strCmpConstStr(str, "begin") == 0)
       return BEGIN;
@@ -59,6 +59,9 @@ int is_keyword(string *str)
       return WHILE;
    if (strCmpConstStr(str, "write") == 0)
       return WRITE;
+   
+   if (fce)
+      return IDENTIFIKATORF;
    return IDENTIFIKATOR;
 }
 
@@ -117,6 +120,8 @@ int getNextToken(string *attr)
                return ROVNO;
             else if (c == ';')
                return STREDNIK;
+            else if (c == ',')
+               return CARKA;
             else if (c == '.')
                return TECKA;
             else if (c == '(')
@@ -146,7 +151,7 @@ int getNextToken(string *attr)
             else
             {
                ungetc(c, source);
-               return is_keyword(attr);
+               return is_keyword(attr, c == '(');
             }
 
             break;
