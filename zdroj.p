@@ -3,16 +3,40 @@ var
    b : real;
    c : string;
 
+function fact(num : integer) : integer; forward;
+
+function fact(num : integer) : integer;
+var
+   temp_result : integer;
+   decremented_num : integer;
 begin
-   a := 7;
-   a++;
+   if n < 2 then
+   begin
+      fact := 1
+   end
+   else
+   begin
+      decremented_num := num - 1;
+      temp_result := fact(decremented_num);
+      fact := n * temp_result
+   end
+end;
 
-   if (a <= 5) then
-      a--;
-   else if (a >= 10) then
-      b := a * 0.1;
-   else if (a <> 8) then
-      a := a + 2;
+begin
+   write('Zadejte cislo pro vypocet faktorialu: ');
+   readln(a);
+   
+   if a < 0 then
+   begin
+      write('Faktorial nelze spocitat'#10'')
+   end
+   else
+   begin
+      a := fact(a);
+      write('Vysledek je: ', vysl, ''#10'')
+   end
+   
+   b := 31.415 * 0.1;
 
-   c := 'Ahoj'#010'Sve''te'#30";
+   c := 'Ahoj'#010'Sve''te'#30''
 end.

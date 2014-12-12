@@ -13,7 +13,7 @@ void setSourceFile(FILE *file)
    source = file;
 }
 
-int is_keyword(string *str)
+int is_keyword(string *str, int fce)
 {
    if (strCmpConstStr(str, "begin") == 0)
       return BEGIN;
@@ -59,13 +59,18 @@ int is_keyword(string *str)
       return WHILE;
    if (strCmpConstStr(str, "write") == 0)
       return WRITE;
+   
+   if (fce)
+      return IDENTIFIKATORF;
    return IDENTIFIKATOR;
 }
 
 int getNextToken(string *attr)
 {
    int c, state = 0;
+   string pomEsc;
    strClear(attr);
+   strClear(&pomEsc);
 
    while (1)
    {
@@ -78,45 +83,41 @@ int getNextToken(string *attr)
             if (isspace(c))
                state = 0; // ignorovani bilych mist
             else if (c == '{')
-               state = 1;
+               state = 1; // komentar
             else if (isalpha(c))
             {
                strAddChar(attr, c);
-               state = 2;
+               state = 2; // zacatek identifikatoru nebo klic. slova
             }
             else if (isdigit(c))
             {
                strAddChar(attr, c);
-               state = 3;
+               state = 3; // cislo int ci double
             }
             else if (c == ':')
             {
-               state = 4;
+               state = 4; // samostatna dvojtecka nebo operator prirazeni
             }
+            else if (c == '<')
+               state = 5; // mensi, mensi nebo rovno
+            else if (c == '>')
+               state = 6; // vetsi, vetsi nebo rovno
+            else if (c == '\'')
+               state = 8; // zacatek retezce
             else if (c == '+')
-            {
-               state = 5;
-            }
+               return PLUS;
             else if (c == '-')
-               state = 6;
+               return MINUS;
             else if (c == '*')
                return KRAT;
             else if (c == '/')
                return DELENO;
-            else if (c == '<')
-               state = 7;
-            else if (c == '>')
-               state = 8;
-            else if (c == '\'')
-               state = 10;
-            else if (c == '#')
-               state = 12;
-            else if (c == '\"')
-               return KONST_STRING;
             else if (c == '=')
                return ROVNO;
             else if (c == ';')
                return STREDNIK;
+            else if (c == ',')
+               return CARKA;
             else if (c == '.')
                return TECKA;
             else if (c == '(')
@@ -141,12 +142,12 @@ int getNextToken(string *attr)
          }
          case 2: // alfanumericky znak (id nebo klic. slovo)
          {
-            if (isalnum(c))
+            if (isalnum(c) || c == '_')
                strAddChar(attr, c);
             else
             {
                ungetc(c, source);
-               return is_keyword(attr);
+               return is_keyword(attr, c == '(');
             }
 
             break;
@@ -158,7 +159,7 @@ int getNextToken(string *attr)
             else if (c == '.')
             {
                strAddChar(attr, c);
-               state = 9;
+               state = 7;
             }
             else
             {
@@ -178,27 +179,7 @@ int getNextToken(string *attr)
                return DVOJTECKA;
             }
          }
-         case 5: // inkrementace
-         {
-            if (c == '+')
-               return INKREMENTACE;
-            else
-            {
-               ungetc(c, source);
-               return PLUS;
-            }
-         }
-         case 6: // dekrementace
-         {
-            if (c == '-')
-               return DEKREMENTACE;
-            else
-            {
-               ungetc(c, source);
-               return MINUS;
-            }
-         }
-         case 7: // mensi, mensi nebo rovno, nerovno
+         case 5: // mensi, mensi nebo rovno, nerovno
          {
             if (c == '=')
                return MENSIROVNO;
@@ -210,7 +191,7 @@ int getNextToken(string *attr)
                return MENSI;
             }
          }
-         case 8:
+         case 6: // vetsi, vetsi nebo rovno
          {
             if (c == '=')
                return VETSIROVNO;
@@ -220,7 +201,7 @@ int getNextToken(string *attr)
                return VETSI;
             }
          }
-         case 9:
+         case 7: // zakladni realne cislo
          {
             if (isdigit(c))
                strAddChar(attr, c);
@@ -229,10 +210,10 @@ int getNextToken(string *attr)
             
             break;
          }
-         case 10:
+         case 8: // retezec
          {
             if (c == '\'')
-               state = 11;
+               state = 9;
             else if (c == EOF || c == '\n')
                return LEXIKALNICHYBA;
             else
@@ -240,38 +221,44 @@ int getNextToken(string *attr)
 
             break;
          }
-         case 11:
+
+         case 9: // apostrof v retezci, escape sekvence nebo konec retezce
          {
             if (c == '\'')
             {
                strAddChar(attr, c);
-               state = 10;
+               state = 8; // apostrof v retezci
             }
+            else if (c == '#')
+               state = 10; // escape sekvence
             else
-            {
-               ungetc(c, source);
-               return KONST_STRING;
-            }
+               return KONST_STRING; // konec retezce
 
             break;
          }
-         case 12:
+
+         case 10: // escape sekvence
          {
             if (isdigit(c))
-               strAddChar(attr, c);
-            else if (strGetLength(attr) == 0)
+               strAddChar(&pomEsc, c);
+            else if (c == '\'')
             {
-               ungetc(c, source);
-               return LEXIKALNICHYBA;
+               if (strlen(pomEsc.str) == 0)
+                  return LEXIKALNICHYBA; // Zadne cislo escape sekvence
+
+               int escape = atoi(pomEsc.str);
+               if (esc < 1 || esc > 255)
+                  return LEXIKALNICHYBA; // Escape sekvence neni znak
+               
+               strAddChar(attr, escape);
+               strClear(&pomEsc);
+               state = 8; // pokracovani retezce
             }
             else
-            {
-               ungetc(c, source);
-               return KONST_CHAR;
-            }
-
+               return LEXIKALNICHYBA;
+            
             break;
-         }         
+         }
       }
    }
 }
