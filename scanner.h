@@ -4,9 +4,9 @@
 
 enum TokenyScanneru
 {
-   IDENTIFIKATORF =     -1,
-   IDENTIFIKATOR =      0,
    LEXIKALNICHYBA =     1,
+   IDENTIFIKATOR =      2,
+   IDENTIFIKATORF =     3,
 
    // klicova slova
    BEGIN =              100,
@@ -39,8 +39,8 @@ enum TokenyScanneru
    KONST_CHAR =         133,
 
    // aritmeticke operatory
-   INKREMENTACE =       140,
-   DEKREMENTACE =       141,
+   INKREMENTACE =       140, // zrejme nepotrebne
+   DEKREMENTACE =       141, // zrejme nepotrebne
    PLUS =               142,
    MINUS =              143,
    KRAT =               144,
