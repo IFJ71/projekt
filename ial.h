@@ -57,7 +57,7 @@ tTableItem *tableSearchFun(tSymbolTable *T, string *key);
 tTableItem *tableInsertVar(tSymbolTable *T, string *key);
 tTableItem *tableInsertFun(tSymbolTable *T, string *key);
 int functionsDefined(tSymbolTable *T);
-void tableFree(tSymbolTable *T);
+void tableFree(tTableItem *T);	//nebere ukazatel na tabulku, ale na jeji prvni prvek (T->first)
 
 #endif
 

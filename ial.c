@@ -507,8 +507,14 @@ int functionsDefined(tSymbolTable *T)
    return functionDefined(T->first);
 }
 
-void tableFree(tSymbolTable *T)
-{
-   
+void tableFree(tTableItem *node)
+//zrusi binarni strom a uvolni pamet, tabulku navrati do stavu po inicializaci (jestli staci T->first = NULL)
+{ 
+	if (node != NULL)
+	{
+		tableFree(node->leftrptr);		// uvolni leve uzly
+		tableFree(node->rightptr);		// uvolni prave uzly
+		free (node);							// uvolni koren
+		node = NULL;						//inicializace
+	}
 }
-
